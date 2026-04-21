@@ -1,0 +1,239 @@
+
+==================================================
+User Query: how many invoices are there?
+SQL: SELECT COUNT(*) FROM invoices;
+Result:    COUNT(*)
+0       101
+Explanation: This SQL query is counting how many rows (or entries) are in the "invoices" table. 
+
+In simple terms, it's like asking: "How many invoices do we have?" And the query is looking at the list of invoices and saying: "Let me count them all and tell you the total number." 
+
+The answer will be a number, like 100 or 500, which tells you how many invoices are in the system.
+
+==================================================
+User Query: list all vendors
+SQL: SELECT * FROM vendors;
+Result:     id                         name           gstin  ... is_watchlist rating onboarded_date
+0    1  TechServe Solutions Pvt Ltd  36AAPA0371A1Z2  ...            0      A     2024-01-15
+1    2               CloudNet Infra  29ABPB1482B1Z3  ...            0      C     2023-02-22
+2    3          PrintMax Stationery  27ACPC2593C1Z7  ...            0      A     2023-01-16
+3    4     GreenLogistics Transport  29ADPD3604D1Z9  ...            0      B     2023-01-14
+4    5       DataPipe Analytics LLP  36AEPE4715E1Z9  ...            0      B     2023-04-23
+5    6    Aegis Facility Management  06AFPF5826F1Z1  ...            0      D     2024-02-17
+6    7            NovaChem Supplies  06AGPG6937A1Z5  ...            1      A     2023-04-21
+7    8       BrightStar IT Services  27AHPA7048B1Z7  ...            0      A     2023-07-03
+8    9         PrimePack Industries  06AIPB8159C1Z1  ...            0      C     2023-08-24
+9   10       Zenith Office Supplies  33AJPC9260D1Z2  ...            0      B     2023-05-31
+10  11        AlphaConsult Partners  06AKPD0371E1Z4  ...            0      C     2023-02-05
+11  12            MegaTrade Exports  06ALPE1482F1Z2  ...            1      D     2023-04-30
+12  13      RapidBuild Construction  06AMPF2593A1Z8  ...            0      C     2024-03-03
+13  14  SafeGuard Security Services  06ANPG3604B1Z6  ...            0      A     2023-12-10
+14  15            OmniTech Hardware  07AOPA4715C1Z3  ...            0      B     2024-01-09
+
+[15 rows x 10 columns]
+Explanation: This SQL query is asking the computer to show all the information about all the vendors. 
+
+It's like saying: "Give me a list of all the vendors and show me everything we know about each one." 
+
+The "*" symbol means "everything", and "FROM vendors" means "look in the list of vendors" to find the information.
+
+==================================================
+User Query: What is total revenue?
+SQL: SELECT SUM(grand_total) FROM invoices WHERE status = 'paid';
+Result:    SUM(grand_total)
+0       84969063.07
+Explanation: This SQL query is finding the total amount of money made from invoices that have been paid. 
+
+Here's how it works:
+1. It looks at a list of invoices.
+2. It only considers the invoices that have been paid (status = 'paid').
+3. It adds up the total amount of money from all those paid invoices (SUM of grand_total).
+4. The result is the total revenue.
+
+==================================================
+User Query: delete all invoices
+SQL: SELECT * FROM invoices
+Result:       id invoice_number  vendor_id  ...         approved_by  approval_date           created_at
+0      1   INV-08-00001          8  ...                None           None  2025-09-04 00:00:00
+1      2   INV-03-00002          3  ...                None           None  2025-05-29 00:00:00
+2      3   INV-03-00003          3  ...     Department Head     2025-06-19  2025-06-17 00:00:00
+3      4   INV-09-00004          9  ...  Finance Controller     2026-01-11  2026-01-07 00:00:00
+4      5   INV-09-00005          9  ...  Finance Controller     2026-01-30  2026-01-29 00:00:00
+..   ...            ...        ...  ...                 ...            ...                  ...
+96    97   INV-01-00097          1  ...                None           None  2025-08-05 00:00:00
+97    98   INV-07-00098          7  ...                None           None  2025-06-02 00:00:00
+98    99   INV-01-00099          1  ...  Finance Controller     2025-06-23  2025-06-22 00:00:00
+99   100   INV-12-00100         12  ...     Department Head     2025-09-28  2025-09-23 00:00:00
+100  101   INV-12-00101         12  ...       System (Auto)     2025-10-07  2025-10-03 00:00:00
+
+[101 rows x 17 columns]
+Explanation: This SQL query is not deleting all invoices. It's actually doing the opposite. 
+
+It's saying: "Show me all the information from the invoices table." 
+
+To delete all invoices, the query would need to start with "DELETE", not "SELECT". The correct query to delete all invoices would be: 
+
+DELETE FROM invoices 
+
+The query provided only retrieves (or "selects") the data, it doesn't delete anything.
+
+==================================================
+User Query: show vendor performance
+SQL: SELECT vendors.name, COUNT(invoices.id) AS invoice_count, SUM(invoices.grand_total) AS total_amount FROM vendors LEFT JOIN invoices ON vendors.id = invoices.vendor_id GROUP BY vendors.name
+Result:                            name  invoice_count  total_amount
+0     Aegis Facility Management              3    6009316.13
+1         AlphaConsult Partners             11   35702708.36
+2        BrightStar IT Services              4    7991659.57
+3                CloudNet Infra              3    3973623.15
+4        DataPipe Analytics LLP              8   24020168.13
+5      GreenLogistics Transport              2    8514071.57
+6             MegaTrade Exports              5    2504127.49
+7             NovaChem Supplies              6   23052665.11
+8             OmniTech Hardware              8   16721752.68
+9          PrimePack Industries              5   13645508.52
+10          PrintMax Stationery             13   16916259.73
+11      RapidBuild Construction             10   33756478.36
+12  SafeGuard Security Services              5   17674307.11
+13  TechServe Solutions Pvt Ltd             12   13598768.25
+14       Zenith Office Supplies              6    6510901.62
+Explanation: This SQL query is doing the following:
+
+1. It's looking at two types of information: **vendors** (the companies that sell things) and **invoices** (the bills that are sent to buy things).
+2. It's trying to find out how well each vendor is doing.
+3. To do this, it's counting:
+   - How many **invoices** (bills) each vendor has.
+   - The total amount of money spent on all **invoices** for each vendor.
+4. It's showing the results for each vendor, with their name, the number of invoices, and the total amount spent.
+
+For example, the results might look like this:
+
+| Vendor Name | Number of Invoices | Total Amount Spent |
+| --- | --- | --- |
+| Vendor A | 10 | $1000 |
+| Vendor B | 5 | $500 |
+| Vendor C | 8 | $800 |
+
+This helps to see which vendors are being used the most and how much money is being spent with each one.
+
+==================================================
+User Query: Top vendors by revenue
+SQL: SELECT vendors.name, SUM(invoices.grand_total) AS revenue FROM invoices JOIN vendors ON invoices.vendor_id = vendors.id WHERE invoices.status = 'paid' GROUP BY vendors.name ORDER BY revenue DESC;
+Result:                            name      revenue
+0         AlphaConsult Partners  18309145.92
+1        DataPipe Analytics LLP  13671902.06
+2          PrimePack Industries  12021668.78
+3             OmniTech Hardware   8806471.60
+4             NovaChem Supplies   7381760.17
+5       RapidBuild Construction   5736811.09
+6   SafeGuard Security Services   4469443.44
+7   TechServe Solutions Pvt Ltd   3235111.75
+8           PrintMax Stationery   2637799.00
+9      GreenLogistics Transport   2606373.07
+10               CloudNet Infra   2582262.12
+11            MegaTrade Exports   2356822.31
+12       BrightStar IT Services   1153491.76
+Explanation: This SQL query is doing the following:
+
+1. It's looking at two sets of data: "invoices" (bills that have been sent) and "vendors" (the people or companies that sent the bills).
+2. It's matching the invoices with the vendors who sent them.
+3. It's only looking at invoices that have been paid.
+4. It's adding up the total amount of money each vendor has been paid (this is called the "revenue").
+5. It's grouping the results by vendor name, so it can show how much each vendor has been paid.
+6. Finally, it's sorting the results so that the vendors who have been paid the most are at the top of the list.
+
+So, the query is answering the question: "Which vendors have earned the most money from paid invoices?"
+
+==================================================
+User Query: Top vendors by invoice
+SQL: SELECT vendors.name, COUNT(invoices.id) AS invoice_count FROM invoices JOIN vendors ON invoices.vendor_id = vendors.id GROUP BY vendors.name ORDER BY invoice_count DESC;
+Result:                            name  invoice_count
+0           PrintMax Stationery             13
+1   TechServe Solutions Pvt Ltd             12
+2         AlphaConsult Partners             11
+3       RapidBuild Construction             10
+4             OmniTech Hardware              8
+5        DataPipe Analytics LLP              8
+6        Zenith Office Supplies              6
+7             NovaChem Supplies              6
+8   SafeGuard Security Services              5
+9          PrimePack Industries              5
+10            MegaTrade Exports              5
+11       BrightStar IT Services              4
+12               CloudNet Infra              3
+13    Aegis Facility Management              3
+14     GreenLogistics Transport              2
+Explanation: This SQL query is doing the following:
+
+1. It's looking at two sets of data: "invoices" and "vendors".
+2. It's matching each invoice with the vendor that sent it.
+3. It's counting how many invoices each vendor has sent.
+4. It's listing all the vendors and the number of invoices they've sent.
+5. It's sorting the list so that the vendors with the most invoices are at the top.
+
+In simple terms, this query is answering the question: "Which vendors have sent us the most invoices?"
+
+==================================================
+User Query: Top vendors by revenue
+SQL: SELECT vendors.name, SUM(invoices.grand_total) AS revenue FROM invoices JOIN vendors ON invoices.vendor_id = vendors.id WHERE invoices.status = 'paid' GROUP BY vendors.name ORDER BY revenue DESC;
+Result:                            name      revenue
+0         AlphaConsult Partners  18309145.92
+1        DataPipe Analytics LLP  13671902.06
+2          PrimePack Industries  12021668.78
+3             OmniTech Hardware   8806471.60
+4             NovaChem Supplies   7381760.17
+5       RapidBuild Construction   5736811.09
+6   SafeGuard Security Services   4469443.44
+7   TechServe Solutions Pvt Ltd   3235111.75
+8           PrintMax Stationery   2637799.00
+9      GreenLogistics Transport   2606373.07
+10               CloudNet Infra   2582262.12
+11            MegaTrade Exports   2356822.31
+12       BrightStar IT Services   1153491.76
+Explanation: This SQL query is doing the following:
+
+1. It's looking at two sets of data: "invoices" (bills that have been sent) and "vendors" (the people or companies that sent the bills).
+2. It's matching the invoices with the vendors who sent them.
+3. It's only looking at invoices that have been paid.
+4. It's adding up the total amount of money each vendor has been paid (this is called the "revenue").
+5. It's grouping the results by vendor name, so it can show how much each vendor has been paid.
+6. Finally, it's sorting the results so that the vendors who have been paid the most are at the top of the list.
+
+So, the query is answering the question: "Which vendors have earned the most money from paid invoices?"
+
+==================================================
+User Query: show vendor performance
+SQL: SELECT vendors.name, COUNT(invoices.id) AS invoice_count, SUM(invoices.grand_total) AS total_amount FROM vendors LEFT JOIN invoices ON vendors.id = invoices.vendor_id GROUP BY vendors.name
+Result:                            name  invoice_count  total_amount
+0     Aegis Facility Management              3    6009316.13
+1         AlphaConsult Partners             11   35702708.36
+2        BrightStar IT Services              4    7991659.57
+3                CloudNet Infra              3    3973623.15
+4        DataPipe Analytics LLP              8   24020168.13
+5      GreenLogistics Transport              2    8514071.57
+6             MegaTrade Exports              5    2504127.49
+7             NovaChem Supplies              6   23052665.11
+8             OmniTech Hardware              8   16721752.68
+9          PrimePack Industries              5   13645508.52
+10          PrintMax Stationery             13   16916259.73
+11      RapidBuild Construction             10   33756478.36
+12  SafeGuard Security Services              5   17674307.11
+13  TechServe Solutions Pvt Ltd             12   13598768.25
+14       Zenith Office Supplies              6    6510901.62
+Explanation: This SQL query is doing the following:
+
+1. It's looking at two types of information: **vendors** (the companies that sell things) and **invoices** (the bills that are sent to buy things).
+2. It's trying to find out how well each vendor is doing.
+3. To do this, it's counting:
+   - How many **invoices** (bills) each vendor has.
+   - The total amount of money spent on all **invoices** for each vendor.
+4. It's showing the results for each vendor, with their name, the number of invoices, and the total amount spent.
+
+For example, the results might look like this:
+
+| Vendor Name | Number of Invoices | Total Amount Spent |
+| --- | --- | --- |
+| Vendor A | 10 | $1000 |
+| Vendor B | 5 | $500 |
+| Vendor C | 8 | $800 |
+
+This helps to see which vendors are being used the most and how much money is being spent with each one.
