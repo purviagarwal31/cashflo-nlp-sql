@@ -47,3 +47,9 @@ Output:
 
 Explanation:
 Counts total number of invoices in the database.
+
+## Key Highlights
+- Built end-to-end NLP → SQL pipeline
+- Implemented query validation to prevent unsafe SQL
+- Handled ambiguous queries with clarification
+- Integrated LLM with structured database execution
