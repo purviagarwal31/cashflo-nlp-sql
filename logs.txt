@@ -237,3 +237,369 @@ For example, the results might look like this:
 | Vendor C | 8 | $800 |
 
 This helps to see which vendors are being used the most and how much money is being spent with each one.
+
+==================================================
+User Query: show all unpaid invoices
+SQL: SELECT * FROM invoices WHERE status IN ('unpaid', 'approved', 'validated', 'on_hold')
+Result:     id invoice_number  vendor_id  ...         approved_by  approval_date           created_at
+0    1   INV-08-00001          8  ...                None           None  2025-09-04 00:00:00
+1    2   INV-03-00002          3  ...                None           None  2025-05-29 00:00:00
+2    3   INV-03-00003          3  ...     Department Head     2025-06-19  2025-06-17 00:00:00
+3    6   INV-07-00006          7  ...                None           None  2025-12-24 00:00:00
+4    7   INV-03-00007          3  ...                None           None  2025-08-08 00:00:00
+5    8   INV-15-00008         15  ...                None           None  2025-05-17 00:00:00
+6   10   INV-01-00010          1  ...                None           None  2025-07-07 00:00:00
+7   12   INV-05-00012          5  ...                None           None  2025-11-27 00:00:00
+8   13   INV-05-00013          5  ...                None           None  2025-11-01 00:00:00
+9   14   INV-11-00014         11  ...                 CFO     2025-10-28  2025-10-25 00:00:00
+10  15   INV-11-00015         11  ...       System (Auto)     2025-10-31  2025-10-27 00:00:00
+11  16   INV-01-00016          1  ...                None           None  2025-07-28 00:00:00
+12  19   INV-14-00019         14  ...       System (Auto)     2025-05-27  2025-05-23 00:00:00
+13  20   INV-08-00020          8  ...                None           None  2025-11-30 00:00:00
+14  26   INV-06-00026          6  ...                None           None  2025-08-18 00:00:00
+15  28   INV-09-00028          9  ...     Department Head     2025-07-11  2025-07-06 00:00:00
+16  29   INV-14-00029         14  ...                None           None  2026-01-02 00:00:00
+17  30   INV-11-00030         11  ...                 CFO     2025-06-20  2025-06-19 00:00:00
+18  33   INV-12-00033         12  ...     Department Head     2025-08-15  2025-08-13 00:00:00
+19  37   INV-15-00037         15  ...                None           None  2025-12-27 00:00:00
+20  38   INV-15-00038         15  ...                None           None  2025-12-19 00:00:00
+21  42   INV-10-00042         10  ...     Department Head     2025-06-11  2025-06-06 00:00:00
+22  43   INV-03-00043          3  ...                 CFO     2025-06-19  2025-06-15 00:00:00
+23  51   INV-03-00051          3  ...  Finance Controller     2025-10-23  2025-10-21 00:00:00
+24  54   INV-14-00054         14  ...                None           None  2025-04-26 00:00:00
+25  55   INV-13-00055         13  ...     Department Head     2025-10-26  2025-10-24 00:00:00
+26  56   INV-03-00056          3  ...                None           None  2025-10-13 00:00:00
+27  57   INV-13-00057         13  ...                 CFO     2025-05-03  2025-05-02 00:00:00
+28  59   INV-03-00059          3  ...                None           None  2025-12-24 00:00:00
+29  60   INV-01-00060          1  ...                None           None  2025-09-06 00:00:00
+30  62   INV-02-00062          2  ...     Department Head     2026-02-11  2026-02-06 00:00:00
+31  65   INV-01-00065          1  ...  Finance Controller     2026-01-14  2026-01-09 00:00:00
+32  72   INV-04-00072          4  ...                 CFO     2025-08-19  2025-08-15 00:00:00
+33  73   INV-15-00073         15  ...                None           None  2025-10-27 00:00:00
+34  76   INV-06-00076          6  ...  Finance Controller     2025-10-21  2025-10-20 00:00:00
+35  77   INV-06-00077          6  ...                None           None  2025-11-01 00:00:00
+36  78   INV-07-00078          7  ...     Department Head     2025-05-24  2025-05-20 00:00:00
+37  79   INV-09-00079          9  ...                None           None  2025-08-02 00:00:00
+38  82   INV-01-00082          1  ...                None           None  2025-05-30 00:00:00
+39  83   INV-02-00083          2  ...                None           None  2025-11-07 00:00:00
+40  86   INV-01-00086          1  ...                None           None  2025-06-20 00:00:00
+41  87   INV-03-00087          3  ...                None           None  2025-11-14 00:00:00
+42  90   INV-11-00090         11  ...                None           None  2025-10-28 00:00:00
+43  91   INV-08-00091          8  ...                None           None  2025-12-23 00:00:00
+44  92   INV-05-00092          5  ...                None           None  2025-05-01 00:00:00
+45  95   INV-14-00095         14  ...                 CFO     2025-06-28  2025-06-23 00:00:00
+46  96   INV-01-00096          1  ...                None           None  2025-09-17 00:00:00
+47  97   INV-01-00097          1  ...                None           None  2025-08-05 00:00:00
+
+[48 rows x 17 columns]
+Explanation: SELECT * FROM invoices WHERE status IN ('unpaid', 'approved', 'validated', 'on_hold')
+
+==================================================
+User Query: what is our revenue?
+SQL: SELECT SUM(grand_total) FROM invoices WHERE status = 'paid'
+Result:    SUM(grand_total)
+0       84969063.07
+Explanation: SELECT SUM(invoices.grand_total) FROM invoices WHERE invoices.status = 'paid'
+
+==================================================
+User Query: what is the total outstanding amount?
+SQL: SELECT SUM(grand_total) FROM invoices WHERE status IN ('approved', 'validated', 'on_hold')
+Result:    SUM(grand_total)
+0       93975383.21
+Explanation: SELECT SUM(invoices.grand_total) FROM invoices WHERE invoices.status IN ('approved', 'validated', 'on_hold')
+
+==================================================
+User Query: show all unpaid invoices
+SQL: SELECT * FROM invoices WHERE status IN ('unpaid', 'approved', 'validated', 'on_hold');
+Result:     id invoice_number  vendor_id  ...         approved_by  approval_date           created_at
+0    1   INV-08-00001          8  ...                None           None  2025-09-04 00:00:00
+1    2   INV-03-00002          3  ...                None           None  2025-05-29 00:00:00
+2    3   INV-03-00003          3  ...     Department Head     2025-06-19  2025-06-17 00:00:00
+3    6   INV-07-00006          7  ...                None           None  2025-12-24 00:00:00
+4    7   INV-03-00007          3  ...                None           None  2025-08-08 00:00:00
+5    8   INV-15-00008         15  ...                None           None  2025-05-17 00:00:00
+6   10   INV-01-00010          1  ...                None           None  2025-07-07 00:00:00
+7   12   INV-05-00012          5  ...                None           None  2025-11-27 00:00:00
+8   13   INV-05-00013          5  ...                None           None  2025-11-01 00:00:00
+9   14   INV-11-00014         11  ...                 CFO     2025-10-28  2025-10-25 00:00:00
+10  15   INV-11-00015         11  ...       System (Auto)     2025-10-31  2025-10-27 00:00:00
+11  16   INV-01-00016          1  ...                None           None  2025-07-28 00:00:00
+12  19   INV-14-00019         14  ...       System (Auto)     2025-05-27  2025-05-23 00:00:00
+13  20   INV-08-00020          8  ...                None           None  2025-11-30 00:00:00
+14  26   INV-06-00026          6  ...                None           None  2025-08-18 00:00:00
+15  28   INV-09-00028          9  ...     Department Head     2025-07-11  2025-07-06 00:00:00
+16  29   INV-14-00029         14  ...                None           None  2026-01-02 00:00:00
+17  30   INV-11-00030         11  ...                 CFO     2025-06-20  2025-06-19 00:00:00
+18  33   INV-12-00033         12  ...     Department Head     2025-08-15  2025-08-13 00:00:00
+19  37   INV-15-00037         15  ...                None           None  2025-12-27 00:00:00
+20  38   INV-15-00038         15  ...                None           None  2025-12-19 00:00:00
+21  42   INV-10-00042         10  ...     Department Head     2025-06-11  2025-06-06 00:00:00
+22  43   INV-03-00043          3  ...                 CFO     2025-06-19  2025-06-15 00:00:00
+23  51   INV-03-00051          3  ...  Finance Controller     2025-10-23  2025-10-21 00:00:00
+24  54   INV-14-00054         14  ...                None           None  2025-04-26 00:00:00
+25  55   INV-13-00055         13  ...     Department Head     2025-10-26  2025-10-24 00:00:00
+26  56   INV-03-00056          3  ...                None           None  2025-10-13 00:00:00
+27  57   INV-13-00057         13  ...                 CFO     2025-05-03  2025-05-02 00:00:00
+28  59   INV-03-00059          3  ...                None           None  2025-12-24 00:00:00
+29  60   INV-01-00060          1  ...                None           None  2025-09-06 00:00:00
+30  62   INV-02-00062          2  ...     Department Head     2026-02-11  2026-02-06 00:00:00
+31  65   INV-01-00065          1  ...  Finance Controller     2026-01-14  2026-01-09 00:00:00
+32  72   INV-04-00072          4  ...                 CFO     2025-08-19  2025-08-15 00:00:00
+33  73   INV-15-00073         15  ...                None           None  2025-10-27 00:00:00
+34  76   INV-06-00076          6  ...  Finance Controller     2025-10-21  2025-10-20 00:00:00
+35  77   INV-06-00077          6  ...                None           None  2025-11-01 00:00:00
+36  78   INV-07-00078          7  ...     Department Head     2025-05-24  2025-05-20 00:00:00
+37  79   INV-09-00079          9  ...                None           None  2025-08-02 00:00:00
+38  82   INV-01-00082          1  ...                None           None  2025-05-30 00:00:00
+39  83   INV-02-00083          2  ...                None           None  2025-11-07 00:00:00
+40  86   INV-01-00086          1  ...                None           None  2025-06-20 00:00:00
+41  87   INV-03-00087          3  ...                None           None  2025-11-14 00:00:00
+42  90   INV-11-00090         11  ...                None           None  2025-10-28 00:00:00
+43  91   INV-08-00091          8  ...                None           None  2025-12-23 00:00:00
+44  92   INV-05-00092          5  ...                None           None  2025-05-01 00:00:00
+45  95   INV-14-00095         14  ...                 CFO     2025-06-28  2025-06-23 00:00:00
+46  96   INV-01-00096          1  ...                None           None  2025-09-17 00:00:00
+47  97   INV-01-00097          1  ...                None           None  2025-08-05 00:00:00
+
+[48 rows x 17 columns]
+Explanation: ```sql
+SELECT * 
+FROM invoices 
+WHERE status IN ('unpaid', 'approved', 'validated', 'on_hold');
+```
+
+==================================================
+User Query: list all vendors
+SQL: SELECT * FROM vendors;
+Result:     id                         name           gstin        pan state_code       city  payment_terms_days  is_watchlist rating onboarded_date
+0    1  TechServe Solutions Pvt Ltd  36AAPA0371A1Z2  AAPA0371A         36      Delhi                  30             0      A     2024-01-15
+1    2               CloudNet Infra  29ABPB1482B1Z3  ABPB1482B         29  Bangalore                  60             0      C     2023-02-22
+2    3          PrintMax Stationery  27ACPC2593C1Z7  ACPC2593C         27     Mumbai                  30             0      A     2023-01-16
+3    4     GreenLogistics Transport  29ADPD3604D1Z9  ADPD3604D         29  Hyderabad                  30             0      B     2023-01-14
+4    5       DataPipe Analytics LLP  36AEPE4715E1Z9  AEPE4715E         36    Chennai                  60             0      B     2023-04-23
+5    6    Aegis Facility Management  06AFPF5826F1Z1  AFPF5826F         06       Pune                  45             0      D     2024-02-17
+6    7            NovaChem Supplies  06AGPG6937A1Z5  AGPG6937A         06      Delhi                  15             1      A     2023-04-21
+7    8       BrightStar IT Services  27AHPA7048B1Z7  AHPA7048B         27      Delhi                  60             0      A     2023-07-03
+8    9         PrimePack Industries  06AIPB8159C1Z1  AIPB8159C         06  Hyderabad                  15             0      C     2023-08-24
+9   10       Zenith Office Supplies  33AJPC9260D1Z2  AJPC9260D         33  Bangalore                  60             0      B     2023-05-31
+10  11        AlphaConsult Partners  06AKPD0371E1Z4  AKPD0371E         06     Mumbai                  30             0      C     2023-02-05
+11  12            MegaTrade Exports  06ALPE1482F1Z2  ALPE1482F         06     Mumbai                  45             1      D     2023-04-30
+12  13      RapidBuild Construction  06AMPF2593A1Z8  AMPF2593A         06      Delhi                  30             0      C     2024-03-03
+13  14  SafeGuard Security Services  06ANPG3604B1Z6  ANPG3604B         06      Delhi                  15             0      A     2023-12-10
+14  15            OmniTech Hardware  07AOPA4715C1Z3  AOPA4715C         07       Pune                  30             0      B     2024-01-09
+Explanation: SELECT * FROM vendors;
+
+==================================================
+User Query: show invoices for the engineering department
+SQL: SELECT i.* 
+FROM invoices i 
+JOIN purchase_orders po ON i.po_id = po.id 
+JOIN departments d ON po.department_id = d.id 
+WHERE d.name = 'Engineering'
+Result:      id invoice_number  vendor_id  ...         approved_by  approval_date           created_at
+0     2   INV-03-00002          3  ...                None           None  2025-05-29 00:00:00
+1     3   INV-03-00003          3  ...     Department Head     2025-06-19  2025-06-17 00:00:00
+2    11   INV-05-00011          5  ...     Department Head     2025-08-02  2025-07-31 00:00:00
+3    12   INV-05-00012          5  ...                None           None  2025-11-27 00:00:00
+4    13   INV-05-00013          5  ...                None           None  2025-11-01 00:00:00
+5    14   INV-11-00014         11  ...                 CFO     2025-10-28  2025-10-25 00:00:00
+6    19   INV-14-00019         14  ...       System (Auto)     2025-05-27  2025-05-23 00:00:00
+7    26   INV-06-00026          6  ...                None           None  2025-08-18 00:00:00
+8    28   INV-09-00028          9  ...     Department Head     2025-07-11  2025-07-06 00:00:00
+9    29   INV-14-00029         14  ...                None           None  2026-01-02 00:00:00
+10   30   INV-11-00030         11  ...                 CFO     2025-06-20  2025-06-19 00:00:00
+11   31   INV-11-00031         11  ...  Finance Controller     2025-05-14  2025-05-12 00:00:00
+12   32   INV-09-00032          9  ...                 CFO     2025-10-18  2025-10-17 00:00:00
+13   33   INV-12-00033         12  ...     Department Head     2025-08-15  2025-08-13 00:00:00
+14   34   INV-07-00034          7  ...       System (Auto)     2026-01-03  2025-12-30 00:00:00
+15   41   INV-10-00041         10  ...  Finance Controller     2025-06-05  2025-05-31 00:00:00
+16   42   INV-10-00042         10  ...     Department Head     2025-06-11  2025-06-06 00:00:00
+17   43   INV-03-00043          3  ...                 CFO     2025-06-19  2025-06-15 00:00:00
+18   44   INV-03-00044          3  ...  Finance Controller     2025-07-15  2025-07-14 00:00:00
+19   46   INV-01-00046          1  ...       System (Auto)     2025-08-02  2025-07-29 00:00:00
+20   53   INV-14-00053         14  ...  Finance Controller     2025-05-18  2025-05-16 00:00:00
+21   58   INV-07-00058          7  ...                None           None  2025-11-09 00:00:00
+22   60   INV-01-00060          1  ...                None           None  2025-09-06 00:00:00
+23   62   INV-02-00062          2  ...     Department Head     2026-02-11  2026-02-06 00:00:00
+24   64   INV-08-00064          8  ...  Finance Controller     2025-07-19  2025-07-15 00:00:00
+25   65   INV-01-00065          1  ...  Finance Controller     2026-01-14  2026-01-09 00:00:00
+26   73   INV-15-00073         15  ...                None           None  2025-10-27 00:00:00
+27   74   INV-15-00074         15  ...                None           None  2025-09-09 00:00:00
+28   75   INV-03-00075          3  ...                None           None  2025-06-06 00:00:00
+29   76   INV-06-00076          6  ...  Finance Controller     2025-10-21  2025-10-20 00:00:00
+30   77   INV-06-00077          6  ...                None           None  2025-11-01 00:00:00
+31   79   INV-09-00079          9  ...                None           None  2025-08-02 00:00:00
+32   82   INV-01-00082          1  ...                None           None  2025-05-30 00:00:00
+33   83   INV-02-00083          2  ...                None           None  2025-11-07 00:00:00
+34   84   INV-11-00084         11  ...  Finance Controller     2025-08-09  2025-08-07 00:00:00
+35   87   INV-03-00087          3  ...                None           None  2025-11-14 00:00:00
+36   88   INV-03-00088          3  ...                None           None  2025-12-03 00:00:00
+37   91   INV-08-00091          8  ...                None           None  2025-12-23 00:00:00
+38   92   INV-05-00092          5  ...                None           None  2025-05-01 00:00:00
+39   98   INV-07-00098          7  ...                None           None  2025-06-02 00:00:00
+40  100   INV-12-00100         12  ...     Department Head     2025-09-28  2025-09-23 00:00:00
+41  101   INV-12-00101         12  ...       System (Auto)     2025-10-07  2025-10-03 00:00:00
+
+[42 rows x 17 columns]
+Explanation: SELECT i.* 
+FROM invoices i 
+JOIN purchase_orders po ON i.po_id = po.id 
+JOIN departments d ON po.department_id = d.id 
+WHERE d.name = 'Engineering'
+
+==================================================
+User Query: list vendors with their invoice totals
+SQL: SELECT vendors.name, SUM(invoices.grand_total) AS total_invoices FROM vendors LEFT JOIN invoices ON vendors.id = invoices.vendor_id GROUP BY vendors.name
+Result:                            name  total_invoices
+0     Aegis Facility Management      6009316.13
+1         AlphaConsult Partners     35702708.36
+2        BrightStar IT Services      7991659.57
+3                CloudNet Infra      3973623.15
+4        DataPipe Analytics LLP     24020168.13
+5      GreenLogistics Transport      8514071.57
+6             MegaTrade Exports      2504127.49
+7             NovaChem Supplies     23052665.11
+8             OmniTech Hardware     16721752.68
+9          PrimePack Industries     13645508.52
+10          PrintMax Stationery     16916259.73
+11      RapidBuild Construction     33756478.36
+12  SafeGuard Security Services     17674307.11
+13  TechServe Solutions Pvt Ltd     13598768.25
+14       Zenith Office Supplies      6510901.62
+Explanation: SELECT vendors.name, SUM(invoices.grand_total) AS total_invoices FROM vendors LEFT JOIN invoices ON vendors.id = invoices.vendor_id GROUP BY vendors.name
+
+==================================================
+User Query: which vendors have invoices above 100000?
+SQL: SELECT DISTINCT v.name 
+FROM vendors v 
+JOIN invoices i ON v.id = i.vendor_id 
+WHERE i.grand_total > 100000
+Result:                            name
+0        BrightStar IT Services
+1           PrintMax Stationery
+2          PrimePack Industries
+3             NovaChem Supplies
+4             OmniTech Hardware
+5   TechServe Solutions Pvt Ltd
+6        DataPipe Analytics LLP
+7         AlphaConsult Partners
+8       RapidBuild Construction
+9                CloudNet Infra
+10    Aegis Facility Management
+11  SafeGuard Security Services
+12            MegaTrade Exports
+13       Zenith Office Supplies
+14     GreenLogistics Transport
+Explanation: SELECT DISTINCT v.name 
+FROM vendors v 
+JOIN invoices i ON v.id = i.vendor_id 
+WHERE i.grand_total > 100000
+
+==================================================
+User Query: which vendor has the highest total invoice value?
+SQL: SELECT vendors.name, SUM(invoices.grand_total) AS total_value FROM invoices JOIN vendors ON invoices.vendor_id = vendors.id GROUP BY vendors.name ORDER BY total_value DESC LIMIT 1;
+Result:                     name  total_value
+0  AlphaConsult Partners  35702708.36
+Explanation: SELECT vendors.name, SUM(invoices.grand_total) AS total_value FROM invoices JOIN vendors ON invoices.vendor_id = vendors.id GROUP BY vendors.name ORDER BY total_value DESC LIMIT 1;
+
+==================================================
+User Query: revenue
+SQL: SELECT SUM(grand_total) FROM invoices WHERE status = 'paid'
+Result:    SUM(grand_total)
+0       84969063.07
+Explanation: SELECT SUM(invoices.grand_total) FROM invoices WHERE invoices.status = 'paid'
+
+==================================================
+User Query: how many invoices were created last month?
+SQL: SELECT COUNT(*) FROM invoices WHERE STRFTIME('%Y-%m', created_at) = STRFTIME('%Y-%m', DATE('now', '-1 month'))
+Result:    COUNT(*)
+0         0
+Explanation: SELECT COUNT(*) 
+FROM invoices 
+WHERE STRFTIME('%Y-%m', created_at) = STRFTIME('%Y-%m', DATE('now', '-1 month'));
+
+==================================================
+User Query: what is the total invoice amount for each department?
+SQL: SELECT departments.name, SUM(invoices.grand_total) 
+FROM invoices 
+JOIN purchase_orders ON invoices.po_id = purchase_orders.id 
+JOIN departments ON purchase_orders.department_id = departments.id 
+GROUP BY departments.name;
+Result:           name  SUM(invoices.grand_total)
+0  Engineering                97585274.18
+1           HR                46069429.80
+2    Marketing                55075199.55
+3   Operations                31862412.25
+Explanation: SELECT departments.name, SUM(invoices.grand_total) 
+FROM invoices 
+JOIN purchase_orders ON invoices.po_id = purchase_orders.id 
+JOIN departments ON purchase_orders.department_id = departments.id 
+GROUP BY departments.name;
+
+==================================================
+User Query: show me revenue for each vendor
+SQL: SELECT vendors.name, SUM(invoices.grand_total) AS revenue FROM invoices JOIN vendors ON invoices.vendor_id = vendors.id WHERE invoices.status = 'paid' GROUP BY vendors.name
+Result:                            name      revenue
+0         AlphaConsult Partners  18309145.92
+1        BrightStar IT Services   1153491.76
+2                CloudNet Infra   2582262.12
+3        DataPipe Analytics LLP  13671902.06
+4      GreenLogistics Transport   2606373.07
+5             MegaTrade Exports   2356822.31
+6             NovaChem Supplies   7381760.17
+7             OmniTech Hardware   8806471.60
+8          PrimePack Industries  12021668.78
+9           PrintMax Stationery   2637799.00
+10      RapidBuild Construction   5736811.09
+11  SafeGuard Security Services   4469443.44
+12  TechServe Solutions Pvt Ltd   3235111.75
+Explanation: SELECT vendors.name, SUM(invoices.grand_total) AS revenue FROM invoices JOIN vendors ON invoices.vendor_id = vendors.id WHERE invoices.status = 'paid' GROUP BY vendors.name
+
+==================================================
+User Query: compare revenue of each vendor and show top 5
+SQL: SELECT vendors.name, SUM(invoices.grand_total) AS revenue FROM invoices JOIN vendors ON invoices.vendor_id = vendors.id WHERE invoices.status = 'paid' GROUP BY vendors.name ORDER BY revenue DESC LIMIT 5
+Result:                      name      revenue
+0   AlphaConsult Partners  18309145.92
+1  DataPipe Analytics LLP  13671902.06
+2    PrimePack Industries  12021668.78
+3       OmniTech Hardware   8806471.60
+4       NovaChem Supplies   7381760.17
+Explanation: ```sql
+SELECT vendors.name, SUM(invoices.grand_total) AS revenue 
+FROM invoices 
+JOIN vendors ON invoices.vendor_id = vendors.id 
+WHERE invoices.status = 'paid' 
+GROUP BY vendors.name 
+ORDER BY revenue DESC 
+LIMIT 5
+```
+
+==================================================
+User Query: compare revenue of each vendor and show top 5
+SQL: SELECT vendors.name, SUM(invoices.grand_total) AS revenue FROM invoices JOIN vendors ON invoices.vendor_id = vendors.id WHERE invoices.status = 'paid' GROUP BY vendors.name ORDER BY revenue DESC LIMIT 5
+Result:                      name      revenue
+0   AlphaConsult Partners  18309145.92
+1  DataPipe Analytics LLP  13671902.06
+2    PrimePack Industries  12021668.78
+3       OmniTech Hardware   8806471.60
+4       NovaChem Supplies   7381760.17
+Explanation: ```sql
+SELECT vendors.name, SUM(invoices.grand_total) AS revenue 
+FROM invoices 
+JOIN vendors ON invoices.vendor_id = vendors.id 
+WHERE invoices.status = 'paid' 
+GROUP BY vendors.name 
+ORDER BY revenue DESC 
+LIMIT 5
+```
+
+==================================================
+User Query: compare revenue of each vendor and show top 5edfcerfcrcrd
+SQL: SELECT vendors.name, SUM(invoices.grand_total) AS revenue FROM invoices JOIN vendors ON invoices.vendor_id = vendors.id WHERE invoices.status = 'paid' GROUP BY vendors.name ORDER BY revenue DESC LIMIT 5;
+Result:                      name      revenue
+0   AlphaConsult Partners  18309145.92
+1  DataPipe Analytics LLP  13671902.06
+2    PrimePack Industries  12021668.78
+3       OmniTech Hardware   8806471.60
+4       NovaChem Supplies   7381760.17
+Explanation: SELECT vendors.name, SUM(invoices.grand_total) AS revenue FROM invoices JOIN vendors ON invoices.vendor_id = vendors.id WHERE invoices.status = 'paid' GROUP BY vendors.name ORDER BY revenue DESC LIMIT 5;

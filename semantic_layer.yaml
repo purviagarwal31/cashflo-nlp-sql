@@ -1,0 +1,50 @@
+tables:
+  invoices:
+    description: "All invoices received from vendors"
+    synonyms: ["bills", "payables"]
+    columns:
+      id: "Unique invoice ID"
+      vendor_id: "Vendor reference"
+      company_id: "Company reference"
+      po_id: "Purchase order reference"
+      grand_total: "Total invoice value including tax"
+      status: "Invoice status (paid, unpaid, approved, etc.)"
+      created_at: "Invoice creation date"
+
+  vendors:
+    description: "Vendor/supplier master data"
+    synonyms: ["suppliers"]
+    columns:
+      id: "Vendor ID"
+      name: "Vendor name"
+      is_watchlisted: "Whether vendor is flagged"
+      rating: "Vendor rating"
+
+  purchase_orders:
+    description: "Purchase orders"
+    synonyms: ["pos"]
+    columns:
+      id: "PO ID"
+      vendor_id: "Vendor reference"
+      department_id: "Department reference"
+      total_amount: "PO total value"
+
+  departments:
+    description: "Company departments"
+    columns:
+      id: "Department ID"
+      name: "Department name"
+
+relationships:
+  - "invoices.vendor_id = vendors.id"
+  - "invoices.po_id = purchase_orders.id"
+  - "purchase_orders.department_id = departments.id"
+
+metrics:
+  revenue:
+    description: "Total revenue from paid invoices"
+    sql: "SUM(invoices.grand_total) WHERE invoices.status = 'paid'"
+
+  outstanding:
+    description: "Total unpaid invoices"
+    sql: "SUM(invoices.grand_total) WHERE invoices.status IN ('approved','validated','on_hold')"

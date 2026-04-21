@@ -1,6 +1,4 @@
-import yaml
+from app.semantic_loader import load_semantic_layer
 
-with open("app/semantic_layer/schema.yaml", "r") as f:
-    schema = yaml.safe_load(f)
-
+schema = load_semantic_layer()
 print(schema.keys())

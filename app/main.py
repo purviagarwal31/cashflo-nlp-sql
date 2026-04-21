@@ -8,7 +8,7 @@ def run():
     print("✅ System Ready! Ask your question (type 'exit' to quit)\n")
 
     while True:
-        user_query = input("Ask: ")
+        user_query = normalize_query(input("Ask your question: "))
 
         if user_query.lower() == "exit":
             print("👋 Exiting...")
@@ -63,6 +63,11 @@ def run():
         except Exception as e:
             print("\n❌ Error:", str(e))
 
+def normalize_query(query):
+    query = query.lower()
+    query = query.replace("bills", "invoices")
+    query = query.replace("suppliers", "vendors")
+    return query
 
 if __name__ == "__main__":
     run()

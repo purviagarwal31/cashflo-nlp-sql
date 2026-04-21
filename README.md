@@ -1,35 +1,87 @@
-# NLP to SQL Query System using LLMs
+# 🚀 NLP to SQL Query System with Semantic Layer
 
-##  Overview
+## 📌 Overview
 This project enables users to query a structured financial database using natural language.
 
-It leverages Large Language Models (LLMs) to convert user queries into SQL, execute them, and return results with explanations.
+It leverages Large Language Models (LLMs) along with a **Semantic Layer** to convert user queries into SQL, execute them, and return results with clear explanations.
 
-The system is designed to be robust, safe, and interpretable.
-
----
-
-##  Features
-- Natural Language → SQL conversion
-- Semantic understanding of business queries
-- SQL validation (prevents unsafe queries)
-- Retry mechanism for failed queries
-- Query explanation generation
-- Logging for observability
-- Ambiguity handling
+The system is designed to be **accurate, safe, and interpretable**, mimicking a real-world AI data assistant.
 
 ---
 
-##  Tech Stack
+## 🔥 Key Features
+
+- 🧠 Natural Language → SQL conversion
+- 🧩 Semantic Layer for business understanding
+- 🔐 SQL validation (blocks unsafe queries)
+- 🔄 Retry mechanism for failed queries
+- 🗣️ Business-friendly query explanations
+- 📊 Automatic execution on database
+- ⚠️ Ambiguity detection (e.g., "top vendors")
+- 📝 Logging for observability
+
+---
+
+## 🧠 Why Semantic Layer?
+
+Naive text-to-SQL systems often fail due to lack of business context.
+
+We introduced a **semantic layer** to:
+
+- Define business metrics (e.g., revenue, outstanding)
+- Map synonyms (e.g., "bills" → invoices)
+- Provide table and column descriptions
+- Guide correct JOIN relationships
+
+This significantly improves query accuracy and reliability.
+
+---
+
+## 🏗️ Architecture
+User Query
+↓
+Query Normalization
+↓
+Semantic Layer Injection
+↓
+LLM (SQL Generation)
+↓
+SQL Validator
+↓
+Query Executor
+↓
+Result + Explanation
+
+---
+
+## ⚙️ Tech Stack
+
 - Python
 - SQLite
-- LLM (Groq / OpenAI)
+- Groq (LLM inference)
 - Pandas
+- YAML (Semantic Layer)
 
 ---
 
-##  Architecture
-User Query → Prompt Builder → LLM → SQL Generator → Validator → Executor → Result + Explanation
+## 📂 Project Structure
+app/
+├── main.py
+├── engine/
+│ ├── query_generator.py
+│ ├── executor.py
+│ ├── validator.py
+│ ├── explainer.py
+│
+├── llm/
+│ ├── llm_client.py
+│ ├── prompt.py
+│
+├── semantic_loader.py
+semantic_layer.yaml
+data/
+README.md
+requirements.txt
 
 ---
 
@@ -41,18 +93,32 @@ User Query → Prompt Builder → LLM → SQL Generator → Validator → Execut
   
 ---
 
-##  Example
+## 🧪 Example Queries
 
-**Input:**
-How many invoices are there?
+### Example 1
+
+**User Query:**
+What is our revenue?
 
 **Generated SQL:**
 ```sql
-SELECT COUNT(*) FROM invoices;
-
-Output:
-101
-
+SELECT SUM(grand_total)
+FROM invoices
+WHERE status = 'paid';
+Explanation:
+Uses invoices table
+Filters only paid invoices
+Calculates total revenue
+Example 2
+User Query:
+Compare revenue of each vendor and show top 5
+Generated SQL:
+SELECT vendors.name, SUM(invoices.grand_total) AS revenue
+FROM invoices
+JOIN vendors ON invoices.vendor_id = vendors.id
+WHERE invoices.status = 'paid'
+GROUP BY vendors.name
+ORDER BY revenue DESC
+LIMIT 5;
 Explanation:
 Counts total number of invoices in the database.
-
