@@ -1,6 +1,6 @@
-# 🚀 NLP to SQL Query System with Semantic Layer
+#  NLP to SQL Query System with Semantic Layer
 
-## 📌 Overview
+##  Overview
 This project enables users to query a structured financial database using natural language.
 
 It leverages Large Language Models (LLMs) along with a **Semantic Layer** to convert user queries into SQL, execute them, and return results with clear explanations.
@@ -9,20 +9,20 @@ The system is designed to be **accurate, safe, and interpretable**, mimicking a 
 
 ---
 
-## 🔥 Key Features
+##  Key Features
 
-- 🧠 Natural Language → SQL conversion
-- 🧩 Semantic Layer for business understanding
-- 🔐 SQL validation (blocks unsafe queries)
-- 🔄 Retry mechanism for failed queries
-- 🗣️ Business-friendly query explanations
-- 📊 Automatic execution on database
-- ⚠️ Ambiguity detection (e.g., "top vendors")
-- 📝 Logging for observability
+-  Natural Language → SQL conversion
+-  Semantic Layer for business understanding
+-  SQL validation (blocks unsafe queries)
+-  Retry mechanism for failed queries
+-  Business-friendly query explanations
+-  Automatic execution on database
+-  Ambiguity detection (e.g., "top vendors")
+-  Logging for observability
 
 ---
 
-## 🧠 Why Semantic Layer?
+##  Why Semantic Layer?
 
 Naive text-to-SQL systems often fail due to lack of business context.
 
@@ -37,7 +37,7 @@ This significantly improves query accuracy and reliability.
 
 ---
 
-## 🏗️ Architecture
+##  Architecture
 User Query
 ↓
 Query Normalization
@@ -54,7 +54,7 @@ Result + Explanation
 
 ---
 
-## ⚙️ Tech Stack
+##  Tech Stack
 
 - Python
 - SQLite
@@ -64,7 +64,7 @@ Result + Explanation
 
 ---
 
-## 📂 Project Structure
+##  Project Structure
 app/
 ├── main.py
 ├── engine/
@@ -93,7 +93,7 @@ requirements.txt
   
 ---
 
-## 🧪 Example Queries
+##  Example Queries
 
 ### Example 1
 
