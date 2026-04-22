@@ -1,16 +1,16 @@
-# NLP-to-SQL System with Semantic Layer
+#  NLP-to-SQL System with Semantic Layer
 
 ### *(Cashflo Hiring Challenge – Problem B)*
 
 ---
 
-## Problem Chosen
+##  Problem Chosen
 
 **Problem B: Semantic Layer on a Database for NLP-to-Query Conversion**
 
 ---
 
-## Overview
+##  Overview
 
 This project builds an **AI-powered data analyst system** that allows users to query a financial database using natural language.
 
@@ -23,124 +23,76 @@ Instead of directly converting text → SQL, the system introduces a **Semantic 
 
 ---
 
-## What the System Does
+##  What the System Does
 
 * Converts natural language → SQL
 * Executes SQL on database
 * Returns:
 
-  * Query results
-  * Human-readable explanation
-  * Visualization suggestion
+  *  Query results
+  *  Human-readable explanation
+  *  Visualization suggestion
 
 ---
 
-## System Architecture
+##  System Architecture
 
-
+```
 User Query
-↓
+   ↓
 Query Normalization
-↓
+   ↓
 Semantic Layer (Context Injection)
-↓
+   ↓
 LLM (Groq - SQL Generation)
-↓
+   ↓
 SQL Validation Layer
-↓
+   ↓
 Query Execution (SQLite)
-↓
+   ↓
 Result + Explanation + Chart Suggestion
-
+```
 
 ---
 
-## Semantic Layer (Core Innovation)
+##  Semantic Layer (Core Innovation)
 
 The semantic layer provides **business context** to the LLM.
 
 ### Includes:
 
-* **Table & Column Descriptions**
-* **Relationships (JOIN paths)**
-* **Business Metrics**
+*  **Table & Column Descriptions**
+*  **Relationships (JOIN paths)**
+*  **Business Metrics**
 
   * `revenue = SUM(grand_total WHERE status = 'paid')`
-* **Synonyms**
+*  **Synonyms**
 
   * bills → invoices
   * suppliers → vendors
-* **Temporal Expressions**
+*  **Temporal Expressions**
 
   * last month
   * last quarter
 
-This significantly improves SQL accuracy over naive text-to-SQL systems.
+ This significantly improves SQL accuracy over naive text-to-SQL systems.
 
 ---
 
-## Features
+##  Features
 
-* Natural Language → SQL conversion
-* Semantic-aware query generation
-* SQL validation (blocks DELETE/DROP/UPDATE)
-* Prevents unsafe queries and enforces schema correctness
-* Retry mechanism for failed queries
-* Ambiguity handling (assumptions for vague queries)
-* Interpretation-based explanations
-* Chart suggestions (Bar / Line / Pie)
-* Logging for observability
-
----
-
-## NLP → SQL Pipeline (Detailed)
-
-1. **User Query Input**
-2. **Normalization Layer**
-
-   * Converts synonyms (e.g., "bills" → invoices)
-3. **Semantic Injection**
-
-   * Injects schema, relationships, metrics, temporal rules
-4. **LLM SQL Generation**
-
-   * Generates structured SQL using strict prompting
-5. **Validation Layer**
-
-   * Blocks unsafe or incorrect SQL
-6. **Execution Engine**
-
-   * Runs query on SQLite database
-7. **Post-processing**
-
-   * Explanation generation
-   * Chart suggestion
+*  Natural Language → SQL conversion
+*  Semantic-aware query generation
+*  SQL validation (blocks DELETE/DROP/UPDATE)
+*  Retry mechanism for failed queries
+*  Ambiguity handling (assumptions for vague queries)
+*  Interpretation-based explanations
+*  Chart suggestions (Bar / Line / Pie)
+*  Logging for observability
 
 ---
 
-## How Interpretation Works
-
-For each query, the system:
-
-* Identifies intent (aggregation, ranking, filtering)
-* Resolves synonyms using semantic layer (e.g., "bills" → invoices)
-* Applies business logic (e.g., revenue = paid invoices)
-* Maps temporal expressions (e.g., last month)
-* Generates SQL accordingly
-
-### Example
-
-**User:** Show unpaid bills
-
-**Interpretation:**
-
-* Entity → invoices
-* Filter → status != 'paid'
-* Output → full invoice records
-
----
-
-## AI Tools Used
+##  AI Tools Used
 
 This project was developed using AI-assisted workflows:
 
@@ -155,11 +107,11 @@ This project was developed using AI-assisted workflows:
 * SQL generation
 * Explanation generation
 
-AI tools were used as **development accelerators**, not replacements for system design.
+ AI tools were used as **development accelerators**, not replacements for system design.
 
 ---
 
-## Tradeoffs & Limitations
+##  Tradeoffs & Limitations
 
 * Temporal queries depend on dataset availability (may return empty results)
 * Explanation layer is rule-based + LLM-assisted (can be improved further)
@@ -169,7 +121,7 @@ AI tools were used as **development accelerators**, not replacements for system 
 
 ---
 
-## How to Run
+##  How to Run
 
 ```bash
 git clone <your-repo-link>
@@ -177,7 +129,13 @@ cd project
 pip install -r requirements.txt
 
 python -m app.main
-Project Structure
+```
+
+---
+
+##  Project Structure
+
+```
 app/
 ├── main.py
 ├── engine/
@@ -194,65 +152,107 @@ semantic_layer.yaml
 data/
 README.md
 requirements.txt
-Key Highlights
-Built end-to-end NLP → SQL pipeline
-Introduced semantic layer for business understanding
-Implemented SQL validation & retry mechanism
-Supported advanced SQL (window functions, ranking)
-Focused on interpretability and correctness
-Demo
+```
 
-https://www.loom.com/share/102e697384b44444b4f2f59b6d3304cb
+---
 
-Sample Queries & Outputs
-1. Simple Query
+##  Key Highlights
 
-Input:
+* Built end-to-end NLP → SQL pipeline
+* Introduced semantic layer for business understanding
+* Implemented SQL validation & retry mechanism
+* Supported advanced SQL (window functions, ranking)
+* Focused on interpretability and correctness
 
+---
+
+##  Demo
+
+ https://www.loom.com/share/102e697384b44444b4f2f59b6d3304cb
+
+---
+
+##  Sample Queries & Outputs
+
+###  1. Simple Query
+
+**Input:**
+
+```
 How many invoices are there?
+```
 
-SQL:
+**SQL:**
 
+```sql
 SELECT COUNT(*) FROM invoices;
-2. Synonym Handling
+```
 
-Input:
+---
 
+###  2. Synonym Handling
+
+**Input:**
+
+```
 Show me all unpaid bills
+```
 
-SQL:
+**SQL:**
 
+```sql
 SELECT * FROM invoices WHERE status != 'paid';
-3. Join Query
+```
 
-Input:
+---
 
+###  3. Join Query
+
+**Input:**
+
+```
 Show invoices with vendor names
+```
 
-SQL:
+**SQL:**
 
+```sql
 SELECT invoices.id, vendors.name, invoices.grand_total
 FROM invoices
 JOIN vendors ON invoices.vendor_id = vendors.id;
-4. Aggregation
+```
 
-Input:
+---
 
+### 🔹 4. Aggregation
+
+**Input:**
+
+```
 What is total revenue?
+```
 
-SQL:
+**SQL:**
 
+```sql
 SELECT SUM(grand_total)
 FROM invoices
 WHERE status = 'paid';
-5. Window Function (Advanced)
+```
 
-Input:
+---
 
+### 🔹 5. Window Function (Advanced)
+
+**Input:**
+
+```
 Show running total of invoices for each vendor
+```
 
-SQL:
+**SQL:**
 
+```sql
 SELECT 
   vendors.name,
   invoices.created_at,
@@ -262,14 +262,21 @@ SELECT
   ) AS running_total
 FROM invoices
 JOIN vendors ON invoices.vendor_id = vendors.id;
-6. Ranking
+```
 
-Input:
+---
 
+### 🔹 6. Ranking
+
+**Input:**
+
+```
 Rank vendors by total invoice value
+```
 
-SQL:
+**SQL:**
 
+```sql
 SELECT 
   vendors.name,
   SUM(invoices.grand_total) AS total_value,
@@ -277,36 +284,21 @@ SELECT
 FROM invoices
 JOIN vendors ON invoices.vendor_id = vendors.id
 GROUP BY vendors.name;
-7. Ambiguity Handling
+```
 
-Input:
+---
 
-Top vendors
+## 🚀 Future Improvements
 
-System Behavior:
+* Multi-turn conversational queries
+* Query caching and reuse
+* UI dashboard for visualization
+* Schema auto-discovery
 
-Assuming "top vendors" means by total invoice value
+---
 
-SQL:
+## 🏁 Conclusion
 
-SELECT vendors.name, SUM(invoices.grand_total) AS total_value
-FROM invoices
-JOIN vendors ON invoices.vendor_id = vendors.id
-GROUP BY vendors.name
-ORDER BY total_value DESC
-LIMIT 5;
-Future Improvements
-Multi-turn conversational queries
-Query caching and reuse
-UI dashboard for visualization
-Schema auto-discovery
-Conclusion
+This project demonstrates how combining **LLMs with a semantic layer** enables accurate, explainable, and production-ready natural language querying over structured databases.
 
-This project demonstrates how combining LLMs with a semantic layer enables accurate, explainable, and production-ready natural language querying over structured databases.
-
-Unlike naive text-to-SQL systems, this approach:
-
-Reduces hallucinations using structured semantic context
-Improves join accuracy and metric correctness
-
-It moves toward building a real-world AI data assistant.
+It goes beyond naive text-to-SQL systems and moves toward a **real-world AI data assistant**.
