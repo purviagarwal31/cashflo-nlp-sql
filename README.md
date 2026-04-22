@@ -83,6 +83,68 @@ This improves SQL accuracy compared to naive text-to-SQL systems.
 
 ---
 
+AI Tools Used
+
+This project was developed using AI-assisted workflows:
+
+ChatGPT
+Used for prompt engineering, debugging, and system design decisions
+Iterated prompts multiple times for better SQL accuracy
+Groq (LLM - llama-3.3-70b-versatile)
+Used for SQL generation and explanation
+
+AI tools were used as development accelerators, not replacements for system design.
+
+Tradeoffs & Limitations
+Temporal queries depend on dataset availability (may return empty results)
+Explanation layer is rule-based + LLM-assisted (can be improved further)
+No UI (CLI-based system)
+No query caching or multi-turn conversations (future scope)
+Some interpretations (e.g., "unpaid") depend on dataset-specific status values and may require semantic tuning
+How to Run
+git clone <repo>
+cd project
+pip install -r requirements.txt
+
+python -m app.main
+Project Structure
+app/
+├── main.py
+├── engine/
+│   ├── query_generator.py
+│   ├── executor.py
+│   ├── validator.py
+│
+├── llm/
+│   ├── llm_client.py
+│
+├── semantic_loader.py
+
+semantic_layer.yaml
+data/
+README.md
+requirements.txt
+Key Highlights
+Built a semantic-aware NLP-to-SQL system
+Designed modular architecture
+Implemented query validation & retry logic
+Supported advanced SQL (window functions, ranking)
+Focused on interpretability and correctness
+
+Demo
+
+https://www.loom.com/share/102e697384b44444b4f2f59b6d3304cb
+
+---
+
+## Future Improvements
+- Multi-turn conversations
+- Query caching
+- UI dashboard
+
+---
+
+
 ## Sample Queries & Outputs
 
 ### 1. Simple Query
@@ -160,64 +222,6 @@ SELECT
 FROM invoices
 JOIN vendors ON invoices.vendor_id = vendors.id
 GROUP BY vendors.name;
-AI Tools Used
-
-This project was developed using AI-assisted workflows:
-
-ChatGPT
-Used for prompt engineering, debugging, and system design decisions
-Iterated prompts multiple times for better SQL accuracy
-Groq (LLM - llama-3.3-70b-versatile)
-Used for SQL generation and explanation
-
-AI tools were used as development accelerators, not replacements for system design.
-
-Tradeoffs & Limitations
-Temporal queries depend on dataset availability (may return empty results)
-Explanation layer is rule-based + LLM-assisted (can be improved further)
-No UI (CLI-based system)
-No query caching or multi-turn conversations (future scope)
-Some interpretations (e.g., "unpaid") depend on dataset-specific status values and may require semantic tuning
-How to Run
-git clone <repo>
-cd project
-pip install -r requirements.txt
-
-python -m app.main
-Project Structure
-app/
-├── main.py
-├── engine/
-│   ├── query_generator.py
-│   ├── executor.py
-│   ├── validator.py
-│
-├── llm/
-│   ├── llm_client.py
-│
-├── semantic_loader.py
-
-semantic_layer.yaml
-data/
-README.md
-requirements.txt
-Key Highlights
-Built a semantic-aware NLP-to-SQL system
-Designed modular architecture
-Implemented query validation & retry logic
-Supported advanced SQL (window functions, ranking)
-Focused on interpretability and correctness
-
-Demo
-
-https://www.loom.com/share/102e697384b44444b4f2f59b6d3304cb👉 (Add your Loom / screen recording link here)
-
----
-
-## Future Improvements
-- Multi-turn conversations
-- Query caching
-- UI dashboard
 
 Conclusion
 
