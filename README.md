@@ -1,16 +1,16 @@
-#  NLP-to-SQL System with Semantic Layer
+# NLP-to-SQL System with Semantic Layer
 
 ### *(Cashflo Hiring Challenge – Problem B)*
 
 ---
 
-##  Problem Chosen
+## Problem Chosen
 
 **Problem B: Semantic Layer on a Database for NLP-to-Query Conversion**
 
 ---
 
-##  Overview
+## Overview
 
 This project builds an **AI-powered data analyst system** that allows users to query a financial database using natural language.
 
@@ -23,19 +23,19 @@ Instead of directly converting text → SQL, the system introduces a **Semantic 
 
 ---
 
-##  What the System Does
+## What the System Does
 
 * Converts natural language → SQL
 * Executes SQL on database
 * Returns:
 
-  *  Query results
-  *  Human-readable explanation
-  *  Visualization suggestion
+  * Query results
+  * Human-readable explanation
+  * Visualization suggestion
 
 ---
 
-##  System Architecture
+## System Architecture
 
 ```
 User Query
@@ -55,44 +55,84 @@ Result + Explanation + Chart Suggestion
 
 ---
 
-##  Semantic Layer (Core Innovation)
+## Semantic Layer (Core Innovation)
 
 The semantic layer provides **business context** to the LLM.
 
 ### Includes:
 
-*  **Table & Column Descriptions**
-*  **Relationships (JOIN paths)**
-*  **Business Metrics**
+* **Table & Column Descriptions**
+* **Relationships (JOIN paths)**
+* **Business Metrics**
 
   * `revenue = SUM(grand_total WHERE status = 'paid')`
-*  **Synonyms**
+* **Synonyms**
 
   * bills → invoices
   * suppliers → vendors
-*  **Temporal Expressions**
+* **Temporal Expressions**
 
   * last month
   * last quarter
 
- This significantly improves SQL accuracy over naive text-to-SQL systems.
+This significantly improves SQL accuracy over naive text-to-SQL systems.
 
 ---
 
-##  Features
+## Features
 
-*  Natural Language → SQL conversion
-*  Semantic-aware query generation
-*  SQL validation (blocks DELETE/DROP/UPDATE)
-*  Retry mechanism for failed queries
-*  Ambiguity handling (assumptions for vague queries)
-*  Interpretation-based explanations
-*  Chart suggestions (Bar / Line / Pie)
-*  Logging for observability
+* Natural Language → SQL conversion
+* Semantic-aware query generation
+* SQL validation (blocks DELETE/DROP/UPDATE)
+* Retry mechanism for failed queries
+* Ambiguity handling (assumptions for vague queries)
+* Interpretation-based explanations
+* Chart suggestions (Bar / Line / Pie)
+* Logging for observability
 
 ---
 
-##  AI Tools Used
+## NLP → SQL Pipeline (Detailed)
+
+1. **User Query Input**
+2. **Normalization Layer**
+
+   * Converts synonyms (e.g., "bills" → invoices)
+3. **Semantic Injection**
+
+   * Injects schema, relationships, metrics, temporal rules
+4. **LLM SQL Generation**
+
+   * Generates structured SQL using strict prompting
+5. **Validation Layer**
+
+   * Blocks unsafe or incorrect SQL
+6. **Execution Engine**
+
+   * Runs query on SQLite database
+7. **Post-processing**
+
+   * Explanation generation
+   * Chart suggestion
+
+---
+
+## Semantic Layer Coverage (Important for Evaluation)
+
+The system explicitly defines:
+
+* Table-level descriptions
+* Column-level descriptions
+* Relationships (multi-table joins)
+* Business metrics (revenue, outstanding)
+* Synonyms mapping
+* Temporal mappings (last month, last quarter)
+
+This ensures **high accuracy and domain awareness**.
+
+---
+
+## AI Tools Used
 
 This project was developed using AI-assisted workflows:
 
@@ -107,11 +147,11 @@ This project was developed using AI-assisted workflows:
 * SQL generation
 * Explanation generation
 
- AI tools were used as **development accelerators**, not replacements for system design.
+AI tools were used as **development accelerators**, not replacements for system design.
 
 ---
 
-##  Tradeoffs & Limitations
+## Tradeoffs & Limitations
 
 * Temporal queries depend on dataset availability (may return empty results)
 * Explanation layer is rule-based + LLM-assisted (can be improved further)
@@ -121,7 +161,7 @@ This project was developed using AI-assisted workflows:
 
 ---
 
-##  How to Run
+## How to Run
 
 ```bash
 git clone <your-repo-link>
@@ -133,7 +173,7 @@ python -m app.main
 
 ---
 
-##  Project Structure
+## Project Structure
 
 ```
 app/
@@ -156,7 +196,7 @@ requirements.txt
 
 ---
 
-##  Key Highlights
+## Key Highlights
 
 * Built end-to-end NLP → SQL pipeline
 * Introduced semantic layer for business understanding
@@ -166,15 +206,15 @@ requirements.txt
 
 ---
 
-##  Demo
+## Demo
 
- https://www.loom.com/share/102e697384b44444b4f2f59b6d3304cb
+https://www.loom.com/share/102e697384b44444b4f2f59b6d3304cb
 
 ---
 
-##  Sample Queries & Outputs
+## Sample Queries & Outputs
 
-###  1. Simple Query
+### 1. Simple Query
 
 **Input:**
 
@@ -190,7 +230,7 @@ SELECT COUNT(*) FROM invoices;
 
 ---
 
-###  2. Synonym Handling
+### 2. Synonym Handling
 
 **Input:**
 
@@ -206,7 +246,7 @@ SELECT * FROM invoices WHERE status != 'paid';
 
 ---
 
-###  3. Join Query
+### 3. Join Query
 
 **Input:**
 
@@ -224,7 +264,7 @@ JOIN vendors ON invoices.vendor_id = vendors.id;
 
 ---
 
-###  4. Aggregation
+### 4. Aggregation
 
 **Input:**
 
@@ -242,7 +282,7 @@ WHERE status = 'paid';
 
 ---
 
-###  5. Window Function (Advanced)
+### 5. Window Function (Advanced)
 
 **Input:**
 
@@ -266,7 +306,7 @@ JOIN vendors ON invoices.vendor_id = vendors.id;
 
 ---
 
-###  6. Ranking
+### 6. Ranking
 
 **Input:**
 
@@ -288,7 +328,7 @@ GROUP BY vendors.name;
 
 ---
 
-##  Future Improvements
+## Future Improvements
 
 * Multi-turn conversational queries
 * Query caching and reuse
@@ -297,7 +337,7 @@ GROUP BY vendors.name;
 
 ---
 
-##  Conclusion
+## Conclusion
 
 This project demonstrates how combining **LLMs with a semantic layer** enables accurate, explainable, and production-ready natural language querying over structured databases.
 
