@@ -1,50 +1,97 @@
 tables:
+
   invoices:
-    description: "All invoices received from vendors"
+    description: "All invoices received from vendors for payment processing"
     synonyms: ["bills", "payables"]
     columns:
-      id: "Unique invoice ID"
-      vendor_id: "Vendor reference"
-      company_id: "Company reference"
-      po_id: "Purchase order reference"
-      grand_total: "Total invoice value including tax"
-      status: "Invoice status (paid, unpaid, approved, etc.)"
-      created_at: "Invoice creation date"
+      id: "Unique identifier for each invoice"
+      vendor_id: "Reference to vendor who issued the invoice"
+      company_id: "Company receiving the invoice"
+      po_id: "Associated purchase order ID"
+      grand_total: "Total invoice amount including taxes"
+      status: "Invoice status such as paid, unpaid, approved, overdue"
+      created_at: "Date when invoice was created"
 
   vendors:
-    description: "Vendor/supplier master data"
+    description: "Master data of vendors supplying goods or services"
     synonyms: ["suppliers"]
     columns:
-      id: "Vendor ID"
+      id: "Unique vendor identifier"
       name: "Vendor name"
-      is_watchlisted: "Whether vendor is flagged"
-      rating: "Vendor rating"
+      is_watchlisted: "Indicates if vendor requires special approval"
+      rating: "Vendor performance rating"
 
   purchase_orders:
-    description: "Purchase orders"
+    description: "Purchase orders created by departments"
     synonyms: ["pos"]
     columns:
-      id: "PO ID"
-      vendor_id: "Vendor reference"
-      department_id: "Department reference"
-      total_amount: "PO total value"
+      id: "Unique purchase order ID"
+      vendor_id: "Vendor associated with the PO"
+      department_id: "Department that created the PO"
+      total_amount: "Total value of the purchase order"
 
   departments:
-    description: "Company departments"
+    description: "Company departments responsible for purchases"
     columns:
-      id: "Department ID"
+      id: "Unique department ID"
       name: "Department name"
+
+  products:
+    description: "Catalog of products being purchased"
+    columns:
+      id: "Unique product identifier"
+      name: "Product name"
+
+  invoice_line_items:
+    description: "Detailed items listed within invoices"
+    columns:
+      id: "Unique line item ID"
+      invoice_id: "Reference to invoice"
+      product_id: "Product being billed"
+      quantity: "Quantity invoiced"
+      unit_rate: "Price per unit of product"
+      total_amount: "Total value for the line item"
 
 relationships:
   - "invoices.vendor_id = vendors.id"
   - "invoices.po_id = purchase_orders.id"
   - "purchase_orders.department_id = departments.id"
+  - "invoice_line_items.invoice_id = invoices.id"
+  - "invoice_line_items.product_id = products.id"
 
 metrics:
   revenue:
     description: "Total revenue from paid invoices"
-    sql: "SUM(invoices.grand_total) WHERE invoices.status = 'paid'"
+    sql: "SUM(invoices.grand_total)"
+    filters:
+      status: "paid"
 
   outstanding:
-    description: "Total unpaid invoices"
-    sql: "SUM(invoices.grand_total) WHERE invoices.status IN ('approved','validated','on_hold')"
+    description: "Total unpaid invoice value"
+    sql: "SUM(invoices.grand_total)"
+    filters:
+      status: "unpaid"
+
+synonyms:
+  invoices: ["bills", "payables"]
+  vendors: ["suppliers"]
+  revenue: ["income", "total revenue"]
+  unpaid: ["outstanding", "pending"]
+  paid: ["settled"]
+
+temporal:
+  last_month:
+    description: "Previous calendar month"
+    sql: "created_at >= DATE('now','start of month','-1 month') AND created_at < DATE('now','start of month')"
+
+  this_month:
+    description: "Current calendar month"
+    sql: "created_at >= DATE('now','start of month')"
+
+  last_quarter:
+    description: "Previous 3 months"
+    sql: "created_at >= DATE('now','-3 months')"
+
+  this_year:
+    description: "Current year"
+    sql: "strftime('%Y', created_at) = strftime('%Y', 'now')"

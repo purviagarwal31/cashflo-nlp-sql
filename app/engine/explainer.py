@@ -1,25 +1,36 @@
 from app.llm.llm_client import generate_sql
 
 def explain_query(user_query, sql):
-    prompt = f"""
-You are an expert data analyst.
+    sql_lower = sql.lower()
+    explanation = []
 
-Explain the SQL query in simple business-friendly English.
+    # Tables
+    if "join" in sql_lower:
+        explanation.append("• Multiple tables are joined to combine related data")
 
-Follow this format strictly:
-- Tables used
-- Filters applied
-- Aggregations (if any)
-- Final output
+    # Filters
+    if "where" in sql_lower:
+        explanation.append("• Filters are applied to narrow down results")
 
-User Question:
-{user_query}
+    # Aggregations
+    if "sum(" in sql_lower:
+        explanation.append("• Aggregation: summing values")
+    if "count(" in sql_lower:
+        explanation.append("• Aggregation: counting records")
 
-SQL Query:
-{sql}
+    # Grouping
+    if "group by" in sql_lower:
+        explanation.append("• Results are grouped by a category")
 
-Return ONLY explanation in bullet points.
-"""
+    # Sorting
+    if "order by" in sql_lower:
+        explanation.append("• Results are sorted")
 
-    explanation = generate_sql(prompt)
-    return explanation.strip()
+    # Limit
+    if "limit" in sql_lower:
+        explanation.append("• Only top results are returned")
+
+    if not explanation:
+        explanation.append("• Basic query without complex transformations")
+
+    return "\n".join(explanation)

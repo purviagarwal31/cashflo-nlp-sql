@@ -603,3 +603,116 @@ Result:                      name      revenue
 3       OmniTech Hardware   8806471.60
 4       NovaChem Supplies   7381760.17
 Explanation: SELECT vendors.name, SUM(invoices.grand_total) AS revenue FROM invoices JOIN vendors ON invoices.vendor_id = vendors.id WHERE invoices.status = 'paid' GROUP BY vendors.name ORDER BY revenue DESC LIMIT 5;
+
+==================================================
+User Query: how many invoices were raised last month?
+SQL: SELECT COUNT(*) FROM invoices WHERE STRFTIME('%Y-%m', created_at) = STRFTIME('%Y-%m', DATE('now', '-1 month'));
+Result:    COUNT(*)
+0         0
+Explanation: * Tables used
+  * invoices
+* Filters applied
+  * Invoices created last month (based on the 'created_at' date)
+* Aggregations (if any)
+  * Count of invoices
+* Final output
+  * Total number of invoices raised last month
+
+==================================================
+User Query: show all invoices for the engineering department
+SQL: SELECT invoices.* 
+FROM invoices 
+JOIN purchase_orders ON invoices.po_id = purchase_orders.id 
+JOIN departments ON purchase_orders.department_id = departments.id 
+WHERE departments.name = 'engineering'
+Result: Empty DataFrame
+Columns: [id, invoice_number, vendor_id, company_id, po_id, invoice_date, due_date, total_taxable_amount, total_tax, grand_total, currency, status, deviation_type, deviation_details, approved_by, approval_date, created_at]
+Index: []
+Explanation: * Tables used
+  * invoices
+  * purchase_orders
+  * departments
+* Filters applied
+  * department name is 'engineering'
+* Aggregations (if any)
+  * None
+* Final output
+  * All columns for invoices associated with the engineering department
+
+==================================================
+User Query: which product has the highest total invoiced value?
+SQL: SELECT vendors.name, SUM(invoices.grand_total) as total_invoiced_value FROM invoices JOIN vendors ON invoices.vendor_id = vendors.id GROUP BY vendors.name ORDER BY total_invoiced_value DESC LIMIT 1
+Result:                     name  total_invoiced_value
+0  AlphaConsult Partners           35702708.36
+Explanation: * Tables used
+  * invoices
+  * vendors
+* Filters applied
+  * None
+* Aggregations (if any)
+  * The total invoiced value is calculated for each vendor by summing up the grand total of all invoices
+* Final output
+  * The vendor with the highest total invoiced value, along with the total invoiced value itself
+
+==================================================
+User Query: show me all unpaid invoices
+SQL: SELECT * FROM invoices WHERE status IN ('approved', 'validated', 'on_hold', 'unpaid')
+Result:     id invoice_number  vendor_id  ...         approved_by  approval_date           created_at
+0    1   INV-08-00001          8  ...                None           None  2025-09-04 00:00:00
+1    2   INV-03-00002          3  ...                None           None  2025-05-29 00:00:00
+2    3   INV-03-00003          3  ...     Department Head     2025-06-19  2025-06-17 00:00:00
+3    6   INV-07-00006          7  ...                None           None  2025-12-24 00:00:00
+4    7   INV-03-00007          3  ...                None           None  2025-08-08 00:00:00
+5    8   INV-15-00008         15  ...                None           None  2025-05-17 00:00:00
+6   10   INV-01-00010          1  ...                None           None  2025-07-07 00:00:00
+7   12   INV-05-00012          5  ...                None           None  2025-11-27 00:00:00
+8   13   INV-05-00013          5  ...                None           None  2025-11-01 00:00:00
+9   14   INV-11-00014         11  ...                 CFO     2025-10-28  2025-10-25 00:00:00
+10  15   INV-11-00015         11  ...       System (Auto)     2025-10-31  2025-10-27 00:00:00
+11  16   INV-01-00016          1  ...                None           None  2025-07-28 00:00:00
+12  19   INV-14-00019         14  ...       System (Auto)     2025-05-27  2025-05-23 00:00:00
+13  20   INV-08-00020          8  ...                None           None  2025-11-30 00:00:00
+14  26   INV-06-00026          6  ...                None           None  2025-08-18 00:00:00
+15  28   INV-09-00028          9  ...     Department Head     2025-07-11  2025-07-06 00:00:00
+16  29   INV-14-00029         14  ...                None           None  2026-01-02 00:00:00
+17  30   INV-11-00030         11  ...                 CFO     2025-06-20  2025-06-19 00:00:00
+18  33   INV-12-00033         12  ...     Department Head     2025-08-15  2025-08-13 00:00:00
+19  37   INV-15-00037         15  ...                None           None  2025-12-27 00:00:00
+20  38   INV-15-00038         15  ...                None           None  2025-12-19 00:00:00
+21  42   INV-10-00042         10  ...     Department Head     2025-06-11  2025-06-06 00:00:00
+22  43   INV-03-00043          3  ...                 CFO     2025-06-19  2025-06-15 00:00:00
+23  51   INV-03-00051          3  ...  Finance Controller     2025-10-23  2025-10-21 00:00:00
+24  54   INV-14-00054         14  ...                None           None  2025-04-26 00:00:00
+25  55   INV-13-00055         13  ...     Department Head     2025-10-26  2025-10-24 00:00:00
+26  56   INV-03-00056          3  ...                None           None  2025-10-13 00:00:00
+27  57   INV-13-00057         13  ...                 CFO     2025-05-03  2025-05-02 00:00:00
+28  59   INV-03-00059          3  ...                None           None  2025-12-24 00:00:00
+29  60   INV-01-00060          1  ...                None           None  2025-09-06 00:00:00
+30  62   INV-02-00062          2  ...     Department Head     2026-02-11  2026-02-06 00:00:00
+31  65   INV-01-00065          1  ...  Finance Controller     2026-01-14  2026-01-09 00:00:00
+32  72   INV-04-00072          4  ...                 CFO     2025-08-19  2025-08-15 00:00:00
+33  73   INV-15-00073         15  ...                None           None  2025-10-27 00:00:00
+34  76   INV-06-00076          6  ...  Finance Controller     2025-10-21  2025-10-20 00:00:00
+35  77   INV-06-00077          6  ...                None           None  2025-11-01 00:00:00
+36  78   INV-07-00078          7  ...     Department Head     2025-05-24  2025-05-20 00:00:00
+37  79   INV-09-00079          9  ...                None           None  2025-08-02 00:00:00
+38  82   INV-01-00082          1  ...                None           None  2025-05-30 00:00:00
+39  83   INV-02-00083          2  ...                None           None  2025-11-07 00:00:00
+40  86   INV-01-00086          1  ...                None           None  2025-06-20 00:00:00
+41  87   INV-03-00087          3  ...                None           None  2025-11-14 00:00:00
+42  90   INV-11-00090         11  ...                None           None  2025-10-28 00:00:00
+43  91   INV-08-00091          8  ...                None           None  2025-12-23 00:00:00
+44  92   INV-05-00092          5  ...                None           None  2025-05-01 00:00:00
+45  95   INV-14-00095         14  ...                 CFO     2025-06-28  2025-06-23 00:00:00
+46  96   INV-01-00096          1  ...                None           None  2025-09-17 00:00:00
+47  97   INV-01-00097          1  ...                None           None  2025-08-05 00:00:00
+
+[48 rows x 17 columns]
+Explanation: * Tables used
+  * invoices
+* Filters applied
+  * Invoices that are unpaid, including those with status 'approved', 'validated', 'on_hold', or 'unpaid'
+* Aggregations (if any)
+  * None
+* Final output
+  * All columns for invoices that have not been paid yet

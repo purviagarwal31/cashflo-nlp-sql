@@ -1,124 +1,224 @@
-#  NLP to SQL Query System with Semantic Layer
+# NLP-to-SQL System with Semantic Layer (Cashflo Hiring Challenge – Problem B)
 
-##  Overview
-This project enables users to query a structured financial database using natural language.
+## Problem Chosen
 
-It leverages Large Language Models (LLMs) along with a **Semantic Layer** to convert user queries into SQL, execute them, and return results with clear explanations.
-
-The system is designed to be **accurate, safe, and interpretable**, mimicking a real-world AI data assistant.
+**Problem B: Semantic Layer on a Database for NLP-to-Query Conversion**
 
 ---
 
-##  Key Features
+## Overview
 
--  Natural Language → SQL conversion
--  Semantic Layer for business understanding
--  SQL validation (blocks unsafe queries)
--  Retry mechanism for failed queries
--  Business-friendly query explanations
--  Automatic execution on database
--  Ambiguity detection (e.g., "top vendors")
--  Logging for observability
+This project builds an **AI-powered data analyst system** that allows users to query a financial database using natural language.
 
----
+Instead of directly converting text → SQL, the system introduces a **Semantic Layer** to bridge the gap between business language and database schema.
 
-##  Why Semantic Layer?
+Example:
 
-Naive text-to-SQL systems often fail due to lack of business context.
+> “Show me unpaid bills”
+> → correctly interpreted as
+> → invoices where status is not paid
 
-We introduced a **semantic layer** to:
+The system generates SQL, validates it, executes it on a database, and returns:
 
-- Define business metrics (e.g., revenue, outstanding)
-- Map synonyms (e.g., "bills" → invoices)
-- Provide table and column descriptions
-- Guide correct JOIN relationships
-
-This significantly improves query accuracy and reliability.
+* Query results
+* Human-readable explanation
+* Visualization suggestion
 
 ---
 
-##  Architecture
+## System Architecture
+
+
 User Query
 ↓
 Query Normalization
 ↓
-Semantic Layer Injection
+Semantic Layer (Context Injection)
 ↓
-LLM (SQL Generation)
+LLM (Groq - SQL Generation)
 ↓
-SQL Validator
+SQL Validation Layer
 ↓
-Query Executor
+Query Execution (SQLite)
 ↓
-Result + Explanation
+Result + Explanation + Chart Suggestion
+
 
 ---
 
-##  Tech Stack
+## Semantic Layer (Core Innovation)
 
-- Python
-- SQLite
-- Groq (LLM inference)
-- Pandas
-- YAML (Semantic Layer)
+The semantic layer provides **business context** to the LLM.
+
+It includes:
+
+* Table & Column Descriptions
+* Relationships (JOIN paths)
+* Business Metrics
+
+  * revenue = SUM(grand_total WHERE status = 'paid')
+* Synonyms
+
+  * bills → invoices
+  * suppliers → vendors
+* Temporal Expressions
+
+  * last month
+  * last quarter
+
+This improves SQL accuracy compared to naive text-to-SQL systems.
 
 ---
 
-##  Project Structure
+## Features
+
+* Natural Language → SQL conversion
+* Semantic-aware query generation
+* SQL validation (blocks unsafe queries like DELETE/DROP)
+* Retry mechanism for failed SQL
+* Ambiguity handling (asks or assumes intent)
+* Business-friendly explanations
+* Chart suggestions (bar / line / pie)
+* Logging for debugging and traceability
+
+---
+
+## Sample Queries & Outputs
+
+### 1. Simple Query
+
+**Input:**
+
+
+How many invoices are there?
+
+
+**SQL:**
+
+```sql
+SELECT COUNT(*) FROM invoices;
+2. Synonym Handling
+
+Input:
+
+Show me all unpaid bills
+
+SQL:
+
+SELECT * FROM invoices WHERE status != 'paid';
+3. Join Query
+
+Input:
+
+Show invoices with vendor names
+
+SQL:
+
+SELECT invoices.id, vendors.name, invoices.grand_total
+FROM invoices
+JOIN vendors ON invoices.vendor_id = vendors.id;
+4. Aggregation
+
+Input:
+
+What is total revenue?
+
+SQL:
+
+SELECT SUM(grand_total)
+FROM invoices
+WHERE status = 'paid';
+5. Window Function (Advanced)
+
+Input:
+
+Show running total of invoices for each vendor
+
+SQL:
+
+SELECT 
+  vendors.name,
+  invoices.created_at,
+  SUM(invoices.grand_total) OVER (
+    PARTITION BY invoices.vendor_id
+    ORDER BY invoices.created_at
+  ) AS running_total
+FROM invoices
+JOIN vendors ON invoices.vendor_id = vendors.id;
+6. Ranking
+
+Input:
+
+Rank vendors by total invoice value
+
+SQL:
+
+SELECT 
+  vendors.name,
+  SUM(invoices.grand_total) AS total_value,
+  RANK() OVER (ORDER BY SUM(invoices.grand_total) DESC) AS rank
+FROM invoices
+JOIN vendors ON invoices.vendor_id = vendors.id
+GROUP BY vendors.name;
+AI Tools Used
+
+This project was developed using AI-assisted workflows:
+
+ChatGPT
+Used for prompt engineering, debugging, and system design decisions
+Iterated prompts multiple times for better SQL accuracy
+Groq (LLM - llama-3.3-70b-versatile)
+Used for SQL generation and explanation
+
+AI tools were used as development accelerators, not replacements for system design.
+
+Tradeoffs & Limitations
+Temporal queries depend on dataset availability (may return empty results)
+Explanation layer is rule-based + LLM-assisted (can be improved further)
+No UI (CLI-based system)
+No query caching or multi-turn conversations (future scope)
+Some interpretations (e.g., "unpaid") depend on dataset-specific status values and may require semantic tuning
+How to Run
+git clone <repo>
+cd project
+pip install -r requirements.txt
+
+python -m app.main
+Project Structure
 app/
 ├── main.py
 ├── engine/
-│ ├── query_generator.py
-│ ├── executor.py
-│ ├── validator.py
-│ ├── explainer.py
+│   ├── query_generator.py
+│   ├── executor.py
+│   ├── validator.py
 │
 ├── llm/
-│ ├── llm_client.py
-│ ├── prompt.py
+│   ├── llm_client.py
 │
 ├── semantic_loader.py
+
 semantic_layer.yaml
 data/
 README.md
 requirements.txt
+Key Highlights
+Built a semantic-aware NLP-to-SQL system
+Designed modular architecture
+Implemented query validation & retry logic
+Supported advanced SQL (window functions, ranking)
+Focused on interpretability and correctness
+
+Demo
+
+https://www.loom.com/share/102e697384b44444b4f2f59b6d3304cb👉 (Add your Loom / screen recording link here)
 
 ---
 
-## Key Highlights
-- Built end-to-end NLP → SQL pipeline
-- Implemented query validation to prevent unsafe SQL
-- Handled ambiguous queries with clarification
-- Integrated LLM with structured database execution
-  
----
+## Future Improvements
+- Multi-turn conversations
+- Query caching
+- UI dashboard
 
-##  Example Queries
+Conclusion
 
-### Example 1
-
-**User Query:**
-What is our revenue?
-
-**Generated SQL:**
-```sql
-SELECT SUM(grand_total)
-FROM invoices
-WHERE status = 'paid';
-Explanation:
-Uses invoices table
-Filters only paid invoices
-Calculates total revenue
-Example 2
-User Query:
-Compare revenue of each vendor and show top 5
-Generated SQL:
-SELECT vendors.name, SUM(invoices.grand_total) AS revenue
-FROM invoices
-JOIN vendors ON invoices.vendor_id = vendors.id
-WHERE invoices.status = 'paid'
-GROUP BY vendors.name
-ORDER BY revenue DESC
-LIMIT 5;
-Explanation:
-Counts total number of invoices in the database.
+This project demonstrates how combining LLMs with a semantic layer enables accurate, explainable, and production-ready natural language querying over structured databases.
