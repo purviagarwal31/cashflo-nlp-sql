@@ -84,6 +84,7 @@ This significantly improves SQL accuracy over naive text-to-SQL systems.
 * Natural Language → SQL conversion
 * Semantic-aware query generation
 * SQL validation (blocks DELETE/DROP/UPDATE)
+* Prevents unsafe queries and enforces schema correctness
 * Retry mechanism for failed queries
 * Ambiguity handling (assumptions for vague queries)
 * Interpretation-based explanations
@@ -117,18 +118,25 @@ This significantly improves SQL accuracy over naive text-to-SQL systems.
 
 ---
 
-## Semantic Layer Coverage (Important for Evaluation)
+## How Interpretation Works
 
-The system explicitly defines:
+For each query, the system:
 
-* Table-level descriptions
-* Column-level descriptions
-* Relationships (multi-table joins)
-* Business metrics (revenue, outstanding)
-* Synonyms mapping
-* Temporal mappings (last month, last quarter)
+* Identifies intent (aggregation, ranking, filtering)
+* Resolves synonyms using semantic layer (e.g., "bills" → invoices)
+* Applies business logic (e.g., revenue = paid invoices)
+* Maps temporal expressions (e.g., last month)
+* Generates SQL accordingly
 
-This ensures **high accuracy and domain awareness**.
+### Example
+
+**User:** Show unpaid bills
+
+**Interpretation:**
+
+* Entity → invoices
+* Filter → status != 'paid'
+* Output → full invoice records
 
 ---
 
@@ -328,6 +336,31 @@ GROUP BY vendors.name;
 
 ---
 
+### 7. Ambiguity Handling
+
+**Input:**
+
+```
+Top vendors
+```
+
+**System Behavior:**
+
+⚠️ Assuming "top vendors" means by total invoice value
+
+**SQL:**
+
+```sql
+SELECT vendors.name, SUM(invoices.grand_total) AS total_value
+FROM invoices
+JOIN vendors ON invoices.vendor_id = vendors.id
+GROUP BY vendors.name
+ORDER BY total_value DESC
+LIMIT 5;
+```
+
+---
+
 ## Future Improvements
 
 * Multi-turn conversational queries
@@ -341,4 +374,9 @@ GROUP BY vendors.name;
 
 This project demonstrates how combining **LLMs with a semantic layer** enables accurate, explainable, and production-ready natural language querying over structured databases.
 
-It goes beyond naive text-to-SQL systems and moves toward a **real-world AI data assistant**.
+Unlike naive text-to-SQL systems, this approach:
+
+* Reduces hallucinations using structured semantic context
+* Improves join accuracy and metric correctness
+
+It moves toward building a **real-world AI data assistant**.
