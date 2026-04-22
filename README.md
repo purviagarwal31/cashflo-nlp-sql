@@ -75,6 +75,29 @@ This significantly improves SQL accuracy over naive text-to-SQL systems.
 
 ---
 
+## Why Semantic Layer Matters
+
+Naive text-to-SQL systems often fail due to:
+- Lack of schema understanding  
+- Incorrect joins  
+- Misinterpretation of business terms  
+
+### Example Comparison
+
+**User Query:** "Show unpaid bills"
+
+❌ Without Semantic Layer:
+- Might fail to map "bills" → invoices  
+- Might not understand "unpaid" → status filter  
+
+✅ With Semantic Layer:
+- bills → invoices  
+- unpaid → status != 'paid'  
+
+→ Produces correct SQL reliably  
+
+---
+
 ## Features
 
 * Natural Language → SQL conversion  
@@ -108,6 +131,19 @@ This significantly improves SQL accuracy over naive text-to-SQL systems.
 
 ---
 
+## SQL Validation Strategy
+
+Before execution, queries are validated to ensure:
+
+- Only SELECT queries are allowed  
+- No destructive operations (DELETE, DROP, UPDATE)  
+- Table and column names match schema  
+- Basic syntax correctness  
+
+This ensures safety and production-readiness.
+
+---
+
 ## How Interpretation Works
 
 For each query, the system:
@@ -130,6 +166,29 @@ For each query, the system:
 
 ---
 
+## Ambiguity Handling
+
+The system detects vague queries and applies one of two strategies:
+
+1. Assumption-based resolution (current implementation)  
+2. (Future) Clarification questions  
+
+### Example
+
+**User:** "Top vendors"
+
+**Ambiguity:**
+- Top by revenue?  
+- Top by number of invoices?  
+
+**Current Behavior:**
+Assumes "top" = highest total invoice value  
+
+**Explanation returned to user:**
+"Assuming top vendors are based on total invoice value"
+
+---
+
 ## AI Tools Used
 
 This project was developed using AI-assisted workflows:
@@ -146,6 +205,22 @@ This project was developed using AI-assisted workflows:
 * Explanation generation  
 
 AI tools were used as **development accelerators**, not replacements for system design.
+
+---
+
+## Design Decisions
+
+### Why Groq?
+Chosen for low-latency LLM inference, enabling near real-time query generation.
+
+### Why Semantic Layer in YAML?
+- Easy to extend  
+- Human-readable  
+- Decouples logic from model  
+
+### Why Rule-based + LLM Explanation?
+- LLM ensures flexibility  
+- Rules ensure consistency  
 
 ---
 
@@ -206,7 +281,13 @@ requirements.txt
 
 ## Demo
 
-https://www.loom.com/share/102e697384b44444b4f2f59b6d3304cb
+A 2-minute walkthrough demonstrating:
+- Natural language query input  
+- SQL generation  
+- Execution and result  
+- Explanation output  
+
+🎥 https://www.loom.com/share/102e697384b44444b4f2f59b6d3304cb
 
 ---
 
@@ -272,6 +353,20 @@ WHERE status = 'paid';
 
 ---
 
+### Example Output
+
+**Result:**
+
+| vendor_name | total_value |
+|------------|------------|
+| ABC Corp   | 4,50,000   |
+| XYZ Ltd    | 3,20,000   |
+
+**Explanation:**
+Calculated total invoice value per vendor and ranked them in descending order.
+
+---
+
 ### 5. Window Function (Advanced)
 
 **Input:**
@@ -334,6 +429,18 @@ GROUP BY vendors.name
 ORDER BY total_value DESC
 LIMIT 5;
 ```
+
+---
+
+## Evaluation Criteria Coverage
+
+| Criteria            | How Addressed |
+|--------------------|-------------|
+| Query Accuracy     | Semantic layer + validation |
+| Semantic Layer     | YAML config with relationships & metrics |
+| Robustness         | Synonyms, temporal parsing, ambiguity handling |
+| Error Handling     | Retry mechanism + validation |
+| AI Usage           | Prompt engineering + Groq LLM |
 
 ---
 
