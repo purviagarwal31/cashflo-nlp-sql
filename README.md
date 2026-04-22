@@ -232,6 +232,64 @@ Chosen for low-latency LLM inference, enabling near real-time query generation.
 * No query caching or multi-turn conversations  
 * Some interpretations (e.g., “unpaid”) depend on dataset-specific status values  
 
+
+### Where I Cut Corners
+
+* **Rule-based interpretation layer**
+  * Some query interpretations (e.g., “unpaid”, “revenue”) are hardcoded
+  * Not fully dynamic or learned from data
+
+* **Single-turn queries only**
+  * No conversational memory or follow-ups (e.g., “now show only last month”)
+
+* **Limited validation depth**
+  * SQL validator blocks unsafe queries but doesn’t fully guarantee semantic correctness
+
+* **No UI / Visualization layer**
+  * Outputs are CLI-based with simple chart suggestions only
+
+---
+
+### What I Would Improve with More Time
+
+* **Dynamic semantic layer**
+  * Auto-generate schema understanding instead of static YAML
+  * Learn synonyms and metrics from data usage
+
+* **Better ambiguity handling**
+  * Ask clarification questions instead of making assumptions
+  * Example: “Top vendors by revenue or volume?”
+
+* **Multi-turn conversation support**
+  * Maintain context across queries
+  * Enable follow-up questions
+
+* **Evaluation framework**
+  * Benchmark accuracy against ground-truth SQL queries
+  * Add test suite for edge cases
+
+* **Frontend dashboard**
+  * Visual charts instead of just suggestions
+  * Interactive query interface
+
+---
+
+### What Would Break at Scale
+
+* **Prompt size explosion**
+  * Semantic layer injection into prompts will become too large for big schemas
+
+* **Latency issues**
+  * LLM-based SQL generation + retries increase response time
+
+* **Schema complexity**
+  * More tables → harder JOIN reasoning → higher error rate
+
+* **Cost scaling**
+  * Repeated LLM calls (generation + retry + explanation) increase cost significantly
+
+* **Inconsistent interpretations**
+  * Same query phrasing may produce slightly different SQL across runs
 ---
 
 ## How to Run
