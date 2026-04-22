@@ -45,7 +45,7 @@ def suggest_chart(query):
         return "Bar Chart"
 
 
-# UPGRADED: Interpretation + SQL explanation
+#  Interpretation + SQL explanation
 def explain(user_query, sql):
     explanation = []
 
